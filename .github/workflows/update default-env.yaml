@@ -1,21 +1,22 @@
-# Example
-name: Environment variables workflow
-
-on: 
+name: blog-service
+on:
   push:
     branches:
       - main
-      - master
-  workflow_dispatch:
-    
+
+env:
+  ## Sets environment variable
+  REPOSITORY: ${{ github.repository }}
+  SERVICE: demo
+  TAG: ${{ github.sha }}
+
 jobs:
-  production:
+
+  docker-build:
+    name: DockerBuildandImageScanning
     runs-on: ubuntu-latest
-    #this is how to tell GitHub Action workflow to use secrets from environment secret
-    environment: production 
-    env:
-      TOKEN: ${{ secrets.TOKEN }}
     steps:
       - uses: actions/checkout@v3
-      - name: validate
-        run: python validate.py
+      - name: Build an image from Dockerfile for ${{ env.SERVICE }} microservices
+        run: |
+          docker build . --file Dockerfile --tag ${{ env.REPOSITORY }}:${{ env.TAG }}
