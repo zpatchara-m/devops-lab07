@@ -1,0 +1,21 @@
+# Example
+name: Environment variables workflow
+
+on: 
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+    
+jobs:
+  production:
+    runs-on: ubuntu-latest
+    #this is how to tell GitHub Action workflow to use secrets from environment secret
+    environment: production 
+    env:
+      TOKEN: ${{ secrets.TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: validate
+        run: python validate.py
